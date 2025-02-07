@@ -12,9 +12,27 @@
 
 <body>
     <div class="container">
-        <h1 class="mb-4">My blog</h1>
+        <div class="row">
+            <div class="col-sm-4">
+                <h1>BBLACK</h1>
+                <p>My blog</p>
+            </div>
+            <h1 class="col-sm-6"></h1>
+            <div class="col-sm-2">
+                <span>Git</span>
+                <%if(show===false){%>
+                <p onclick="window.location.href='/login'">Do you want to edit?</p>
+                <%}%>
+                <%if(show===true){%>
+                <p onclick="window.location.href='/logout'">Logout</p>
+                <%}%>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <%if(show===true){%>
         <a href="/blogs/new" class="btn btn-success">New blog</a>
-
+        <%}%>
         <% blogs.forEach(blog=> { %>
             <div class="card mt-4">
                 <div class="card-body">
@@ -28,10 +46,12 @@
                         <%= blog.description %>
                     </div>
                     <a href="blogs/<%= blog.slug %>" class="btn btn-primary">Read More</a>
+                    <%if(show===true){%>
                     <a href="blogs/edit/<%= blog.id %>" class="btn btn-info">Edit</a>
                     <form action="/blogs/<%= blog.id %>?_method=DELETE" method="POST" class="d-inline">
                         <button type="submit" class="btn btn-danger">Delete</button>
                     </form>
+                    <%}%>
                 </div>
             </div>
             <% }) %>

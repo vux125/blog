@@ -4,19 +4,27 @@ const Blog = require('./models/blogs');
 const config = require('./config/global');
 const db = require('./config/connectdb');
 const app = express();
+const {authentication1} = require('./middleware/admin');
+const {viewLogin, login, show} = require('./controllers/blogctr');
 require('dotenv').config();
 
 const port = process.env.PORT_SERVER;
 config(app);
 db.connect();
 
-app.get('/', async (req, res) => {
+app.get('/', authentication1,async (req, res) => {
   const blog = await Blog.find().sort({ createdAt: 'desc' });
-  res.render('index', { blogs: blog });
+  res.render('index', { blogs: blog , show: show(req)});
 })
 
-app.use('/blogs', router);
+app.get('/login', viewLogin);
+app.post('/login', login);  
+app.get('/logout', (req, res) => {
+  res.cookie('jwt', '', { maxAge: 0 });
+  res.redirect('/');
+});
 
+app.use('/blogs', router);
 
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);
