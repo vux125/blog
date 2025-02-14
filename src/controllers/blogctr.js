@@ -10,12 +10,14 @@ const viewLogin = (req, res) => {
 const login = (req, res) => { 
     username = req.body.username;
     password = req.body.password;
-    if (username === process.env.USERNAME && password === process.env.PASSWORD) {
+    if (username === process.env.USER && password === process.env.PASS) {
         const token = jwt.sign({ username: username}, process.env.JWT_SECRET);
         res.cookie('jwt', token, { httpOnly: true, maxAge: 1000 * 60 * 60 * 24 });
         res.redirect('/');
     } else {
-        res.redirect('/login');
+      console.log(process.env.USER, " ", process.env.PASS);
+      res.redirect('/login');
+        
     }  
 }
 
@@ -39,7 +41,6 @@ const viewEdit = async (req, res) => {
 const viewBlog = async (req, res) => {
   const blog = await Blog.findOne({ slug: req.params.slug });
   if (blog == null) res.redirect('/');
-  console.log(blog);
   res.render('show', { blog: blog ,show: show(req)});
 };
 
@@ -64,10 +65,9 @@ function saveBlogAndRedirect(path) {
     blog.title = req.body.title;
     blog.description = req.body.description;
     blog.markdown = req.body.markdown;
-    console.log(blog);
+    
     try {
       blog = await blog.save();
-      console.log(blog);
       res.redirect(`/blogs/${blog.slug}`);
     } catch (e) {
         console.log(e);
@@ -82,7 +82,7 @@ function updateBlogAndRedirect(path) {
         blog = await Blog.findById(req.params.id);
         blog.markdown = req.body.markdown;
         await blog.save();
-        console.log(blog);
+        
         res.redirect(`/blogs/${blog.slug}`);
     } catch (e) {
         console.log(e);

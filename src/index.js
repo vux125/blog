@@ -13,6 +13,7 @@ config(app);
 db.connect();
 
 app.get('/', authentication1,async (req, res) => {
+  console.log(req);
   const blog = await Blog.find().sort({ createdAt: 'desc' });
   res.render('index', { blogs: blog , show: show(req)});
 })
@@ -26,6 +27,7 @@ app.get('/logout', (req, res) => {
 
 app.use('/blogs', router);
 
-app.listen(port, () => {
+app.listen(port, (req,res) => {
+  console.log(req);
   console.log(`Example app listening at http://localhost:${port}`);
 });
